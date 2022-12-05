@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'globals.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthServices {
   static Future<http.Response> register(
@@ -37,8 +39,39 @@ class AuthServices {
       headers: headers,
       body: body,
     );
+
+    Map<String, dynamic> responseJson = json.decode(response.body);
+    // save token use shared preferences
+    SharedPreferences sp = await SharedPreferences.getInstance();
+
+    sp.setString("token", responseJson['token']);
+
+    // ignore: avoid_print
+    print(sp.getString("token"));
+
     // ignore: avoid_print
     print(response.body);
+    return response;
+  }
+
+  static Future<http.Response> logout() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+
+    String? token = sp.getString("token");
+
+    var url = Uri.parse('http://10.0.2.2:8000/api/auth/logout');
+
+    final header = {
+      'Authorization': 'Bearer $token',
+    };
+
+    http.Response response = await http.post(
+      url,
+      headers: header,
+    );
+
+    sp.remove("token");
+
     return response;
   }
 }
