@@ -1,10 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../Services/auth_services.dart';
 import '../Services/globals.dart';
 
 import 'home_page.dart';
+import 'auth_screen.dart';
 import 'package:flutter_api/utils/validator.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,8 +20,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  // final ApiClient _apiClient = ApiClient();
-  bool _showPassword = false;
+
+  AuthServices authServices = Get.put(AuthServices());
+
+  bool _showPassword = true;
   final String _deviceName = 'handphone';
 
   Future<void> login() async {
@@ -82,7 +86,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          // SizedBox(height: size.height * 0.08),
+                          SizedBox(height: size.height * 0.04),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            const AuthScreen(),
+                                      ));
+                                },
+                                child: Image.asset(
+                                  'assets/images/logo.png', // On click should redirect to an URL
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: size.height * 0.02),
                           const Center(
                             child: Text(
                               "Login",
