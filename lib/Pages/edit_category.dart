@@ -13,39 +13,20 @@ import 'package:flutter_api/Pages/home_page.dart';
 
 import 'package:http/http.dart' as http;
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class EditCategoryScreen extends StatefulWidget {
+  final int id;
+  const EditCategoryScreen({Key? key, required this.id}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<EditCategoryScreen> createState() => _EditCategoryScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  static Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+class _EditCategoryScreenState extends State<EditCategoryScreen> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   UserController userController = Get.put(UserController());
   // CategoryController categoryController = Get.put(CategoryController());
 
   bool _isBack = true;
-
-  logoutPressed() async {
-    http.Response response = await AuthServices.logout();
-
-    if (response.statusCode == 204) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => const LoginScreen(),
-        ),
-        (route) => false,
-      );
-    } else {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => const HomePage(),
-          ));
-    }
-  }
 
   back() {
     if (_isBack == true) {
@@ -162,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              'Add Categories',
+                              'Edit Categories',
                               style: TextStyle(
                                   color: ColorPicker.dark,
                                   fontFamily: FontPicker.semibold,
@@ -211,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               // addCategory
                             },
                             child: const Text(
-                              'Submit',
+                              'Update',
                               style: TextStyle(
                                   color: ColorPicker.white,
                                   fontFamily: FontPicker.semibold,
@@ -225,62 +206,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               ],
             ),
-            Container(
-              padding: const EdgeInsets.only(left: 25, right: 25),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(0),
-                    child: const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "List Categories",
-                          style: TextStyle(
-                              color: ColorPicker.dark,
-                              fontSize: 18,
-                              fontFamily: FontPicker.semibold),
-                        )),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  // show category list
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.only(left: 10, right: 0),
-                    margin: const EdgeInsets.only(bottom: 10),
-                    height: 60,
-                    decoration: BoxDecoration(
-                        color: ColorPicker.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: const [
-                          BoxShadow(
-                              color: ColorPicker.hintText,
-                              offset: Offset(0, 1),
-                              blurRadius: 7)
-                        ]),
-                    child: ListTile(
-                        title: Text(
-                          'Dummy',
-                          style: TextStyle(
-                            color: ColorPicker.grey,
-                            fontFamily: FontPicker.medium,
-                            fontSize: 13,
-                          ),
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(
-                            Icons.delete_outline_rounded,
-                            color: ColorPicker.danger,
-                          ),
-                          onPressed: () {},
-                        )),
-                  ),
-                  // Show list Category
-                ],
-              ),
-            )
           ],
         ),
       ),
