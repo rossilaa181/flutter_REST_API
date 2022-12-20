@@ -21,19 +21,19 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(36),
+          padding: const EdgeInsets.all(36),
           child: Center(
             child: Obx(
               () => Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 50,
                     ),
                     Column(
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 50,
                         ),
                         Row(
@@ -55,23 +55,21 @@ class _AuthScreenState extends State<AuthScreen> {
                             )
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 50,
                         ),
-                        Container(
-                          child: Text(
-                            'Stisla Apps',
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontFamily: FontPicker.bold,
-                              color: ColorPicker.dark,
-                            ),
+                        const Text(
+                          'Stisla Apps',
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontFamily: FontPicker.bold,
+                            color: ColorPicker.dark,
                           ),
                         ),
                         Container(
                           width: 300,
                           padding: const EdgeInsets.only(top: 8),
-                          child: Text(
+                          child: const Text(
                             'Merupakan STARTING APP FLUTTER sederhana untuk memenuhi tugas akhir mata kuliah Mobile',
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -83,7 +81,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 50,
                     ),
                     Container(
@@ -133,7 +131,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Expanded(
@@ -179,7 +177,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                   ]),
