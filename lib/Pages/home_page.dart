@@ -1,12 +1,12 @@
+// ignore_for_file: unused_import, unused_field
+
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_api/controllers/user_controller.dart';
 import 'package:flutter_api/Services/auth_services.dart';
 import 'package:flutter_api/Pages/login_screen.dart';
 import 'package:flutter_api/Pages/category_screen.dart';
@@ -31,7 +31,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   static Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  UserController userController = Get.put(UserController());
 
   bool _isHome = true;
 
@@ -95,20 +94,17 @@ class _HomePageState extends State<HomePage> {
                   top: 80,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      FutureBuilder(
-                        future: userController.getName(),
-                        builder: (context, snapshot) => Text(
-                          'Hai, ${snapshot.data}',
-                          style: const TextStyle(
-                              fontFamily: FontPicker.bold,
-                              fontSize: 20,
-                              color: ColorPicker.white),
-                        ),
+                    children: const [
+                      Text(
+                        'Hai Stisla User!',
+                        style: TextStyle(
+                            fontFamily: FontPicker.bold,
+                            fontSize: 20,
+                            color: ColorPicker.white),
                       ),
-                      const Align(
+                      Align(
                         child: Text(
-                          'Stisla User',
+                          'Have a nice day 😊',
                           style: TextStyle(
                               fontFamily: FontPicker.medium,
                               fontSize: 14,

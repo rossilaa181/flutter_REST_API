@@ -1,9 +1,9 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:flutter_api/controllers/user_controller.dart';
-import 'package:flutter_api/controllers/category_controller.dart';
 import 'package:flutter_api/Services/auth_services.dart';
 import 'package:flutter_api/partials/color_pickers.dart';
 import 'package:flutter_api/partials/font_pickers.dart';
@@ -23,8 +23,6 @@ class EditCategoryScreen extends StatefulWidget {
 
 class _EditCategoryScreenState extends State<EditCategoryScreen> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  UserController userController = Get.put(UserController());
-  // CategoryController categoryController = Get.put(CategoryController());
 
   bool _isBack = true;
 
@@ -66,20 +64,17 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                   top: 80,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      FutureBuilder(
-                        future: userController.getName(),
-                        builder: (context, snapshot) => Text(
-                          'Hai, ${snapshot.data}',
-                          style: const TextStyle(
-                              fontFamily: FontPicker.bold,
-                              fontSize: 20,
-                              color: ColorPicker.white),
-                        ),
+                    children: const [
+                      Text(
+                        'Hai Stisla User!',
+                        style: TextStyle(
+                            fontFamily: FontPicker.bold,
+                            fontSize: 20,
+                            color: ColorPicker.white),
                       ),
-                      const Align(
+                      Align(
                         child: Text(
-                          'Stisla User',
+                          'Have a nice day 😊',
                           style: TextStyle(
                               fontFamily: FontPicker.medium,
                               fontSize: 14,

@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:flutter_api/controllers/user_controller.dart';
-import 'package:flutter_api/controllers/category_controller.dart';
 import 'package:flutter_api/Services/auth_services.dart';
 import 'package:flutter_api/partials/color_pickers.dart';
 import 'package:flutter_api/partials/font_pickers.dart';
-import 'package:flutter_api/Pages/edit_category.dart';
 import 'package:flutter_api/Pages/login_screen.dart';
 import 'package:flutter_api/Pages/home_page.dart';
 
@@ -21,9 +17,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  UserController userController = Get.put(UserController());
-  // CategoryController categoryController = Get.put(CategoryController());
+  static final Future<SharedPreferences> _prefs =
+      SharedPreferences.getInstance();
 
   bool _isBack = true;
 
@@ -31,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     http.Response response = await AuthServices.logout();
 
     if (response.statusCode == 204) {
+      // ignore: use_build_context_synchronously
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
@@ -85,20 +81,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   top: 80,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      FutureBuilder(
-                        future: userController.getName(),
-                        builder: (context, snapshot) => Text(
-                          'Hai, ${snapshot.data}',
-                          style: const TextStyle(
-                              fontFamily: FontPicker.bold,
-                              fontSize: 20,
-                              color: ColorPicker.white),
-                        ),
+                    children: const [
+                      Text(
+                        'Hai Stisla User!',
+                        style: TextStyle(
+                            fontFamily: FontPicker.bold,
+                            fontSize: 20,
+                            color: ColorPicker.white),
                       ),
-                      const Align(
+                      Align(
                         child: Text(
-                          'Stisla User',
+                          'Have a nice day 😊',
                           style: TextStyle(
                               fontFamily: FontPicker.medium,
                               fontSize: 14,
@@ -261,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               blurRadius: 7)
                         ]),
                     child: ListTile(
-                        title: Text(
+                        title: const Text(
                           'Dummy',
                           style: TextStyle(
                             color: ColorPicker.grey,
