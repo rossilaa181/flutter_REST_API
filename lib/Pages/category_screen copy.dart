@@ -1,36 +1,27 @@
-// ignore_for_file: unused_import
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:flutter/material.dart';
+
 import 'package:flutter_api/Services/auth_services.dart';
-import 'package:flutter_api/Services/category_services.dart';
 import 'package:flutter_api/partials/color_pickers.dart';
 import 'package:flutter_api/partials/font_pickers.dart';
-import 'package:flutter_api/Pages/edit_category.dart';
 import 'package:flutter_api/Pages/login_screen.dart';
 import 'package:flutter_api/Pages/home_page.dart';
-import 'package:flutter_api/Models/category_model.dart';
 
 import 'package:http/http.dart' as http;
 
-class EditCategoryScreen extends StatefulWidget {
-  EditCategoryScreen({
-    super.key,
-    this.category,
-  });
-
-  Category? category;
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<EditCategoryScreen> createState() => _EditCategoryScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _EditCategoryScreenState extends State<EditCategoryScreen> {
-  final TextEditingController editTextController = TextEditingController();
-  String? editCategoryError;
-
+class _HomeScreenState extends State<HomeScreen> {
   String? token;
   List<String> user = [];
 
@@ -53,7 +44,6 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
   @override
   void initState() {
     super.initState();
-    editTextController.text = widget.category!.name;
 
     getToken().then((value) {
       setState(() {
@@ -69,6 +59,26 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
   }
 
   bool _isBack = true;
+
+  logoutPressed() async {
+    http.Response response = await AuthServices.logout();
+
+    if (response.statusCode == 204) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => const LoginScreen(),
+        ),
+        (route) => false,
+      );
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const HomePage(),
+          ));
+    }
+  }
 
   back() {
     if (_isBack == true) {
@@ -174,9 +184,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                         borderRadius: BorderRadius.circular(10),
                         color: ColorPicker.white),
                     child: TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/category');
-                      },
+                      onPressed: back,
                       child: const Text(
                         'Back',
                         style: TextStyle(
@@ -207,7 +215,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                         const Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              'Edit Categories',
+                              'Add Categories',
                               style: TextStyle(
                                   color: ColorPicker.dark,
                                   fontFamily: FontPicker.semibold,
@@ -230,35 +238,9 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                                     offset: Offset(0, 1))
                               ]),
                           child: TextFormField(
-                            keyboardType: TextInputType.text,
-                            controller: editTextController,
-                            decoration: InputDecoration(
-                              // border: OutlineInputBorder(
-                              //   borderRadius: BorderRadius.circular(25.0),
-                              //   borderSide: BorderSide.none,
-                              // ),
-                              filled: true,
-                              // fillColor: Colors.grey[100],
-                              hintText: "Category Name",
-                              prefixIcon: Icon(
-                                Icons.person,
-                                color: Colors.grey[600],
-                              ),
-                              errorText: editCategoryError,
-                              errorStyle: const TextStyle(
-                                fontSize: 16.0,
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: const BorderSide(
-                                    color: Colors.red, width: 1.0),
-                              ),
-                            ),
-                            onTap: () {
-                              setState(() {
-                                editCategoryError = null;
-                              });
-                            },
+                            // controller: ,
+                            decoration: const InputDecoration(
+                                hintText: "Category", border: InputBorder.none),
                           ),
                         ),
                         const SizedBox(
@@ -280,23 +262,9 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                           child: TextButton(
                             onPressed: () {
                               // addCategory
-                              CategoryService.requestUpdate(
-                                      widget.category!, editTextController.text)
-                                  .then((response) {
-                                if (response.statusCode == 200) {
-                                  editTextController.clear();
-                                  Navigator.pushNamed(context, '/category');
-                                } else if (response.statusCode == 422) {
-                                  var jsonObj = json.decode(response.body);
-                                  var errors = jsonObj['errors'];
-                                  setState(() {
-                                    editCategoryError = errors['name'][0];
-                                  });
-                                }
-                              });
                             },
                             child: const Text(
-                              'Update',
+                              'Submit',
                               style: TextStyle(
                                   color: ColorPicker.white,
                                   fontFamily: FontPicker.semibold,
@@ -310,6 +278,62 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                 )
               ],
             ),
+            Container(
+              padding: const EdgeInsets.only(left: 25, right: 25),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(0),
+                    child: const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "List Categories",
+                          style: TextStyle(
+                              color: ColorPicker.dark,
+                              fontSize: 18,
+                              fontFamily: FontPicker.semibold),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  // show category list
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.only(left: 10, right: 0),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    height: 60,
+                    decoration: BoxDecoration(
+                        color: ColorPicker.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: ColorPicker.hintText,
+                              offset: Offset(0, 1),
+                              blurRadius: 7)
+                        ]),
+                    child: ListTile(
+                        title: const Text(
+                          'Dummy',
+                          style: TextStyle(
+                            color: ColorPicker.grey,
+                            fontFamily: FontPicker.medium,
+                            fontSize: 13,
+                          ),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(
+                            Icons.delete_outline_rounded,
+                            color: ColorPicker.danger,
+                          ),
+                          onPressed: () {},
+                        )),
+                  ),
+                  // Show list Category
+                ],
+              ),
+            )
           ],
         ),
       ),
