@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,10 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController =
       TextEditingController(text: 'password');
 
-  AuthServices authServices = Get.put(AuthServices());
-
   bool _showPassword = true;
-  final String _deviceName = 'handphone';
 
   Future<void> login() async {
     if (_formKey.currentState!.validate()) {
@@ -38,13 +37,11 @@ class _LoginScreenState extends State<LoginScreen> {
       dynamic res = await AuthServices.login(
         emailController.text,
         passwordController.text,
-        _deviceName,
       );
 
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       if (res.statusCode == 200) {
-        // String accessToken = res['access_token'];
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

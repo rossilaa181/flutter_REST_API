@@ -3,36 +3,59 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 
+import '../Models/user_modal.dart';
 import 'globals.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
 
-class AuthServices extends GetxController {
-  static Future<http.Response> login(
-      String email, String password, String device_name) async {
+class AuthServices {
+  String token;
+
+  AuthServices({
+    required this.token,
+  });
+
+  factory AuthServices.createObjectResult(Map<String, dynamic> objectResult) {
+    return AuthServices(token: objectResult['token']);
+  }
+
+  static Future<http.Response> login(String email, String password) async {
+    final sharedPref = await SharedPreferences.getInstance();
     Map data = {
       "email": email,
       "password": password,
-      "device_name": device_name,
+      "device_name": 'rosilaaa',
     };
     var headers = {'Content-Type': 'application/json'};
     var body = json.encode(data);
-    var url = Uri.parse('http://10.0.2.2:8000/api/auth/login');
+    var url = Uri.parse('http://127.0.0.1:8000/api/auth/login');
     http.Response response = await http.post(url, headers: headers, body: body);
 
-    Map<String, dynamic> responseJson = json.decode(response.body);
+    var jsonObject = json.decode(response.body);
+    if (response.statusCode == 200) {
+      var object = AuthServices.createObjectResult(jsonObject);
+      var userData = (jsonObject as Map<String, dynamic>)['data'];
 
-    // save token use shared preferences
-    SharedPreferences sp = await SharedPreferences.getInstance();
+      var user = User.fromMap(userData);
+      var userPropertiesList = User.toStrList(user);
+      // simpen ke shared pref
+      sharedPref.setString('token', object.token);
+      sharedPref.setStringList('user', userPropertiesList);
+    }
 
-    sp.setString("token", responseJson['token']);
+    // Map<String, dynamic> responseJson = json.decode(response.body);
 
-    // ignore: avoid_print
-    print(sp.getString("token"));
+    // // save token use shared preferences
+    // SharedPreferences sp = await SharedPreferences.getInstance();
 
-    // ignore: avoid_print
-    print(response.body);
+    // sp.setString("token", responseJson['token']);
+
+    // // ignore: avoid_print
+    // print(sp.getString("token"));
+
+    // // ignore: avoid_print
+    // print(response.body);
     return response;
   }
 
@@ -41,9 +64,11 @@ class AuthServices extends GetxController {
 
     String? token = sp.getString("token");
 
-    var url = Uri.parse('http://10.0.2.2:8000/api/auth/logout');
+    var url = Uri.parse('http://127.0.0.1:8000/api/auth/logout');
 
     final header = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
       'Authorization': 'Bearer $token',
     };
 
@@ -52,7 +77,10 @@ class AuthServices extends GetxController {
       headers: header,
     );
 
-    sp.remove("token");
+    if (response.statusCode == 204) {
+      sp.remove('token');
+      sp.remove('user');
+    }
 
     return response;
   }

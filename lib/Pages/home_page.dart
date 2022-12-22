@@ -1,8 +1,7 @@
-// ignore_for_file: unused_import, unused_field
+// ignore_for_file: unused_import, unused_field, use_build_context_synchronously
 
 import 'dart:convert';
 import 'package:provider/provider.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
@@ -23,14 +22,41 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // context.read<CategoryService>.categoryList();
+  String? token;
+  List<String> user = [];
+
+  Future<String> getToken() async {
+    final sharedPref = await SharedPreferences.getInstance();
+
+    String token = sharedPref.getString('token')!;
+
+    return token;
   }
 
-  static Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  Future<List<String>> getUser() async {
+    final sharedPref = await SharedPreferences.getInstance();
+
+    List<String> user = sharedPref.getStringList('user')!;
+
+    return user;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    getToken().then((value) {
+      setState(() {
+        token = value;
+      });
+    });
+
+    getUser().then((value) {
+      setState(() {
+        user = value;
+      });
+    });
+  }
 
   bool _isHome = true;
 
@@ -91,18 +117,41 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Positioned(
                   left: 25,
-                  top: 80,
+                  top: 83,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        'Hai Stisla User!',
-                        style: TextStyle(
-                            fontFamily: FontPicker.bold,
-                            fontSize: 20,
-                            color: ColorPicker.white),
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            'Hai ',
+                            style: TextStyle(
+                                fontFamily: FontPicker.bold,
+                                fontSize: 20,
+                                color: ColorPicker.white),
+                          ),
+                          Text(
+                            user[0],
+                            style: const TextStyle(
+                                fontFamily: FontPicker.bold,
+                                fontSize: 20,
+                                color: ColorPicker.white),
+                          ),
+                        ],
                       ),
                       Align(
+                        child: Text(
+                          user[1],
+                          style: const TextStyle(
+                              fontFamily: FontPicker.medium,
+                              fontSize: 12,
+                              color: ColorPicker.white),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      const Align(
                         child: Text(
                           'Have a nice day 😊',
                           style: TextStyle(
@@ -168,7 +217,8 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const CategoryScreen()),
                   );
                 },
                 child: Text('Category List'),
